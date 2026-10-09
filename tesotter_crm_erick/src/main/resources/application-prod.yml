@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: tesotter-crm-erick
+  profiles:
+    active: prod
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://mongo:27017/tesotter_crm_erick_prod}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    root: WARN
+    com.tesotter_crm_erick: WARN
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api

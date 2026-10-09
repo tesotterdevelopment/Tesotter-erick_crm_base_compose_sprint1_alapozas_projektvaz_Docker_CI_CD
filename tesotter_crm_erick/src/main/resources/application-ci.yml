@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: tesotter-crm-erick
+  profiles:
+    active: ci
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/tesotter_crm_erick_ci
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop
+
+logging:
+  level:
+    root: WARN
+    com.tesotter_crm_erick: INFO
