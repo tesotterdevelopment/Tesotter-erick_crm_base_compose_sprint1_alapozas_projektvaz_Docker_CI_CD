@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: tesotter-crm-erick
+  data:
+    mongodb:
+      auto-index-creation: true
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
