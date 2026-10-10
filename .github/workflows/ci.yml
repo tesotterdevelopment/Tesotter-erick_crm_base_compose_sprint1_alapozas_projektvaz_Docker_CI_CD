@@ -20,12 +20,23 @@ concurrency:
 
 jobs:
   backend:
-    name: Backend · Maven
+    name: Backend - Maven
     runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
 
     defaults:
       run:
         working-directory: tesotter_crm_erick
+
+    env:
+      SPRING_PROFILES_ACTIVE: ci
+      SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/tesotter_crm_erick_ci
+      SPRING_DOCKER_COMPOSE_ENABLED: 'false'
 
     steps:
       - name: Checkout repository
@@ -39,11 +50,32 @@ jobs:
           cache: maven
           cache-dependency-path: tesotter_crm_erick/pom.xml
 
+      - name: Wait for MongoDB
+        run: |
+          for i in $(seq 1 30); do
+            if bash -c 'echo > /dev/tcp/127.0.0.1/27017' 2>/dev/null; then
+              echo "MongoDB is accepting connections"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MongoDB startup timed out"
+          exit 1
+
       - name: Maven tests and package
         run: mvn -B --no-transfer-progress clean verify
 
+      - name: Upload Maven test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: tesotter_crm_erick/target/surefire-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
   frontend:
-    name: Frontend · Next.js
+    name: Frontend - Next.js
     runs-on: ubuntu-latest
 
     defaults:
@@ -76,7 +108,7 @@ jobs:
           NEXT_TELEMETRY_DISABLED: '1'
 
   docker:
-    name: Infrastructure · Docker Compose
+    name: Infrastructure - Docker Compose
     runs-on: ubuntu-latest
 
     env:
@@ -99,8 +131,9 @@ jobs:
         run: |
           docker run --rm \
             -v "$PWD/infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" \
+            -e SITE_ADDRESS=":80" \
             caddy:2 \
             caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 
       - name: Print image summary
-        run: docker compose images
+        run: docker image ls
