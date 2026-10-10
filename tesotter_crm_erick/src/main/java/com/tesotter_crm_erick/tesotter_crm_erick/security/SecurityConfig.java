@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.GrantedAuthority;
+
 @Configuration @EnableMethodSecurity
 public class SecurityConfig {
  @Bean PasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder();}
@@ -29,12 +31,22 @@ public class SecurityConfig {
  @Bean JwtEncoder jwtEncoder(SecretKey key) {return new NimbusJwtEncoder(new ImmutableSecret<>(key));}
  @Bean JwtDecoder jwtDecoder(SecretKey key) {return NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();}
  @Bean SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-  JwtAuthenticationConverter converter=new JwtAuthenticationConverter();
-  converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-   Object claim=jwt.getClaim("roles");
-   if(!(claim instanceof java.util.Collection<?> values)) return java.util.List.of();
-   return values.stream().map(v -> new SimpleGrantedAuthority("ROLE_"+v)).toList();
-  });
+  
+ JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+
+ converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+      Object claim = jwt.getClaim("roles");
+
+      if (!(claim instanceof java.util.Collection<?> values)) {
+          return java.util.List.<GrantedAuthority>of();
+      }
+
+      return values.stream()
+          .map(v -> (GrantedAuthority)
+              new SimpleGrantedAuthority("ROLE_" + v))
+          .toList();
+ });
+
   return http.csrf(csrf -> csrf.disable()) // Stateless bearer-token API, not cookie auth.
     .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
     .authorizeHttpRequests(auth -> auth
