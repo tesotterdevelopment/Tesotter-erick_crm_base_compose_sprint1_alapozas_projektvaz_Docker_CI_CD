@@ -1,0 +1,112 @@
+name: tesotter-erick_crm_base_compose_sprint1_alapozas_projektvaz_docker_ci_cd
+services:
+  tesotter_crm_erick:
+    build:
+      context: tesotter_crm_erick
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+    - '8080'
+    networks:
+    - app
+    - database
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://app:${MONGO_APP_PASSWORD}@mongo:27017/app?authSource=app
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - bash -c 'echo > /dev/tcp/127.0.0.1/8080'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+    - '3000'
+    networks:
+    - app
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    networks:
+    - database
+    volumes:
+    - mongo_data:/data/db
+    - ./infra/mongo/init-app.js:/docker-entrypoint-initdb.d/init-app.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in
+        .env}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?Set MONGO_APP_PASSWORD in .env}
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - mongosh --quiet --username app --password "$$MONGO_APP_PASSWORD" --authenticationDatabase
+        app app --eval 'db.runCommand({ping:1}).ok' >/dev/null
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    security_opt:
+    - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+    - ${PUBLIC_BIND_IP:-127.0.0.1}:80:80
+    - ${PUBLIC_BIND_IP:-127.0.0.1}:443:443
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    networks:
+    - app
+    volumes:
+    - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    - caddy_data:/data
+    - caddy_config:/config
+    security_opt:
+    - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+networks:
+  app:
+    driver: bridge
+  database:
+    driver: bridge
+    internal: true
+volumes:
+  mongo_data: null
+  caddy_data: null
+  caddy_config: null

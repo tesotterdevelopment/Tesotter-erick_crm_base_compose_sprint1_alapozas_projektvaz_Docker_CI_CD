@@ -1,0 +1,18 @@
+{$SITE_ADDRESS::80} {
+    encode zstd gzip
+    @route_2 path /api /api/*
+    handle @route_2 {
+        reverse_proxy tesotter_crm_erick:8080
+    }
+    handle {
+        reverse_proxy web:3000
+    }
+    header {
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+    log {
+        output stdout
+        format json
+    }
+}

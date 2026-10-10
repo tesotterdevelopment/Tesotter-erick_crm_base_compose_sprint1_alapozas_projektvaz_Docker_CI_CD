@@ -1,0 +1,51 @@
+schemaVersion: 1
+project:
+  name: tesotter-erick_crm_base_compose_sprint1_alapozas_projektvaz_docker_ci_cd
+applications:
+  tesotter_crm_erick:
+    adapter: spring-boot-maven
+    source: existing
+    path: tesotter_crm_erick
+    port: 8080
+    dockerfile:
+      strategy: generate-if-missing
+      file: Dockerfile
+    networks:
+    - app
+    - database
+    requires: []
+    profiles: []
+  web:
+    adapter: nextjs
+    source: existing
+    path: web
+    port: 3000
+    dockerfile:
+      strategy: generate-if-missing
+      file: Dockerfile
+    networks:
+    - app
+    requires: []
+    profiles: []
+mongodb:
+  enabled: true
+  mode: bundled
+  version: '7'
+proxy:
+  enabled: true
+  tls: auto
+  routes:
+    /api: tesotter_crm_erick
+    /: web
+  strip_prefix: {}
+networks:
+  app:
+    internal: false
+  database:
+    internal: true
+profiles: {}
+security:
+  hardened_containers: true
+  secrets_provider: files
+generation:
+  overwrite: ask
