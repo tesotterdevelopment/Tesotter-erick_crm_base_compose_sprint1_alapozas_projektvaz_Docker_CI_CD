@@ -1,0 +1,21 @@
+name: Commitlint
+on:
+  pull_request:
+    branches: [tool/forger]
+permissions:
+  contents: read
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save @commitlint/cli@19 @commitlint/config-conventional@19
+      - run: |
+          git log --format=%s origin/${{ github.base_ref }}..HEAD | while IFS= read -r msg; do
+            printf '%s\n' "$msg" | npx commitlint
+          done

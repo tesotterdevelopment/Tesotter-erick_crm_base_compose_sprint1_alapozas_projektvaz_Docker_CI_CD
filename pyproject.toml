@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "tesotter-forger"
+version = "0.1.0"
+description = "Modular, secure-first Docker Compose project scaffolding CLI"
+requires-python = ">=3.11"
+dependencies = ["typer>=0.12", "rich>=13", "pydantic>=2", "PyYAML>=6", "Jinja2>=3"]
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "build>=1"]
+[project.scripts]
+forger = "forger.cli:app"
+[tool.setuptools.packages.find]
+include = ["forger*"]
+[tool.setuptools.package-data]
+forger = ["templates/**/*"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]

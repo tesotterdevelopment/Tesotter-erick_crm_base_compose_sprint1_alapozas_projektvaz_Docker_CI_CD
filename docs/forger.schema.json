@@ -1,0 +1,279 @@
+{
+  "$defs": {
+    "AppConfig": {
+      "properties": {
+        "adapter": {
+          "enum": [
+            "spring-boot-maven",
+            "nextjs",
+            "generic-docker"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "source": {
+          "default": "existing",
+          "enum": [
+            "existing",
+            "scaffold"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "port": {
+          "exclusiveMinimum": 0,
+          "maximum": 65535,
+          "title": "Port",
+          "type": "integer"
+        },
+        "dockerfile": {
+          "$ref": "#/$defs/DockerfileConfig"
+        },
+        "networks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Networks",
+          "type": "array"
+        },
+        "requires": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Requires",
+          "type": "array"
+        },
+        "profiles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Profiles",
+          "type": "array"
+        },
+        "health_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Health Path"
+        }
+      },
+      "required": [
+        "adapter",
+        "path",
+        "port"
+      ],
+      "title": "AppConfig",
+      "type": "object"
+    },
+    "DockerfileConfig": {
+      "properties": {
+        "strategy": {
+          "default": "generate-if-missing",
+          "enum": [
+            "generate-if-missing",
+            "preserve",
+            "generate"
+          ],
+          "title": "Strategy",
+          "type": "string"
+        },
+        "file": {
+          "default": "Dockerfile",
+          "title": "File",
+          "type": "string"
+        }
+      },
+      "title": "DockerfileConfig",
+      "type": "object"
+    },
+    "GenerationConfig": {
+      "properties": {
+        "overwrite": {
+          "default": "ask",
+          "enum": [
+            "ask",
+            "skip",
+            "replace"
+          ],
+          "title": "Overwrite",
+          "type": "string"
+        }
+      },
+      "title": "GenerationConfig",
+      "type": "object"
+    },
+    "MongoConfig": {
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "mode": {
+          "default": "bundled",
+          "enum": [
+            "bundled",
+            "external"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "version": {
+          "default": "7",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "title": "MongoConfig",
+      "type": "object"
+    },
+    "NetworkConfig": {
+      "properties": {
+        "internal": {
+          "default": false,
+          "title": "Internal",
+          "type": "boolean"
+        }
+      },
+      "title": "NetworkConfig",
+      "type": "object"
+    },
+    "ProjectConfig": {
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "ProjectConfig",
+      "type": "object"
+    },
+    "ProxyConfig": {
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "domain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Domain"
+        },
+        "tls": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "off"
+          ],
+          "title": "Tls",
+          "type": "string"
+        },
+        "routes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Routes",
+          "type": "object"
+        },
+        "strip_prefix": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Strip Prefix",
+          "type": "object"
+        }
+      },
+      "title": "ProxyConfig",
+      "type": "object"
+    },
+    "SecurityConfig": {
+      "properties": {
+        "hardened_containers": {
+          "default": true,
+          "title": "Hardened Containers",
+          "type": "boolean"
+        },
+        "secrets_provider": {
+          "const": "files",
+          "default": "files",
+          "title": "Secrets Provider",
+          "type": "string"
+        }
+      },
+      "title": "SecurityConfig",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "project": {
+      "$ref": "#/$defs/ProjectConfig"
+    },
+    "applications": {
+      "additionalProperties": {
+        "$ref": "#/$defs/AppConfig"
+      },
+      "title": "Applications",
+      "type": "object"
+    },
+    "mongodb": {
+      "$ref": "#/$defs/MongoConfig"
+    },
+    "proxy": {
+      "$ref": "#/$defs/ProxyConfig"
+    },
+    "networks": {
+      "additionalProperties": {
+        "$ref": "#/$defs/NetworkConfig"
+      },
+      "title": "Networks",
+      "type": "object"
+    },
+    "profiles": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Profiles",
+      "type": "object"
+    },
+    "security": {
+      "$ref": "#/$defs/SecurityConfig"
+    },
+    "generation": {
+      "$ref": "#/$defs/GenerationConfig"
+    }
+  },
+  "required": [
+    "project"
+  ],
+  "title": "Manifest",
+  "type": "object"
+}

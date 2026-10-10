@@ -1,0 +1,1 @@
+{ "release-type": "python", "include-component-in-tag": true, "packages": { ".": { "component": "forger", "changelog-path": "CHANGELOG.md" } } }
