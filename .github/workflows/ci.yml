@@ -36,6 +36,7 @@ jobs:
     env:
       SPRING_PROFILES_ACTIVE: ci
       SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/tesotter_crm_erick_ci
+      CRM_JWT_SECRET: ci-only-jwt-secret-32-bytes-minimum-1234567890
       SPRING_DOCKER_COMPOSE_ENABLED: 'false'
 
     steps:
@@ -114,6 +115,7 @@ jobs:
     env:
       MONGO_ROOT_PASSWORD: ci-only-root-password
       MONGO_APP_PASSWORD: ci-only-app-password
+      CRM_JWT_SECRET: ci-only-jwt-secret-32-bytes-minimum-1234567890
       SITE_ADDRESS: ':80'
       PUBLIC_BIND_IP: 127.0.0.1
 

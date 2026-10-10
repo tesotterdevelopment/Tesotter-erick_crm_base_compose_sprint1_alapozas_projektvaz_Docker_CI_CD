@@ -4,11 +4,14 @@ import com.tesotter_crm_erick.tesotter_crm_erick.dto.ContactDto;
 import com.tesotter_crm_erick.tesotter_crm_erick.dto.CreateContactRequest;
 import com.tesotter_crm_erick.tesotter_crm_erick.service.ContactService;
 import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/contacts")
 @RequiredArgsConstructor
@@ -16,7 +19,7 @@ public class ContactController {
     private final ContactService contactService;
 
     @PostMapping
-    public ResponseEntity<ContactDto> createContact(@RequestBody CreateContactRequest request) {
+    public ResponseEntity<ContactDto> createContact(@Valid @RequestBody CreateContactRequest request) {
         ContactDto created = contactService.createContact(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }

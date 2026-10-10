@@ -12,3 +12,6 @@ logging:
   level:
     root: WARN
     com.tesotter_crm_erick: INFO
+crm:
+  jwt:
+    secret: ${CRM_JWT_SECRET:ci-only-jwt-secret-32-bytes-minimum-1234567890}

@@ -4,6 +4,11 @@
     handle @route_2 {
         reverse_proxy tesotter_crm_erick:8080
     }
+    # Springdoc redirects /api/swagger-ui.html to its static /swagger-ui/index.html assets.
+    @swagger_assets path /swagger-ui /swagger-ui/*
+    handle @swagger_assets {
+        reverse_proxy tesotter_crm_erick:8080
+    }
     handle {
         reverse_proxy web:3000
     }

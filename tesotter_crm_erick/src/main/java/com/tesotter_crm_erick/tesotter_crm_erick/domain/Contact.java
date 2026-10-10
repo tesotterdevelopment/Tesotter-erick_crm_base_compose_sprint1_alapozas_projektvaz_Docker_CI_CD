@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import java.time.LocalDateTime;
 
 @Document(collection = "contacts")
@@ -18,7 +19,7 @@ public class Contact {
     private String id;
     private String firstName;
     private String lastName;
-    private String email;
+    @Indexed(unique=true) private String email;
     private String phoneNumber;
     private String company;
     private LocalDateTime createdAt;

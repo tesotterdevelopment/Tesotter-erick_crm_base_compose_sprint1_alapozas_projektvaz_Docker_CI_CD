@@ -1,6 +1,8 @@
 package com.tesotter_crm_erick.tesotter_crm_erick.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,6 +11,16 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleAuth(BadCredentialsException ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.builder().timestamp(LocalDateTime.now()).status(401).error("Unauthorized").message("Invalid credentials").path(request.getDescription(false).replace("uri=", "")).build());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, WebRequest request) {
+        return ResponseEntity.badRequest().body(ErrorResponse.builder().timestamp(LocalDateTime.now()).status(400).error("Bad Request").message("Invalid request").path(request.getDescription(false).replace("uri=", "")).build());
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(

@@ -16,3 +16,22 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+
+crm:
+  jwt:
+    secret: ${CRM_JWT_SECRET}
+    ttl-seconds: 900
+  bootstrap:
+    email: ${CRM_BOOTSTRAP_EMAIL:}
+    password: ${CRM_BOOTSTRAP_PASSWORD:}
+
+# OpenAPI is opt-in. Set CRM_OPENAPI_ENABLED=true only on trusted developer environments.
+springdoc:
+  api-docs:
+    enabled: ${CRM_OPENAPI_ENABLED:false}
+    path: /api/v3/api-docs
+  swagger-ui:
+    enabled: ${CRM_OPENAPI_ENABLED:false}
+    path: /api/swagger-ui.html
+    url: /api/v3/api-docs
+    config-url: /api/v3/api-docs/swagger-config

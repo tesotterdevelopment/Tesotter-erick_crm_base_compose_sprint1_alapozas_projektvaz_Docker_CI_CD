@@ -21,6 +21,10 @@ services:
         max-size: 10m
         max-file: '3'
     environment:
+      CRM_JWT_SECRET: ${CRM_JWT_SECRET:?Set CRM_JWT_SECRET in .env}
+      CRM_OPENAPI_ENABLED: ${CRM_OPENAPI_ENABLED:-false}
+      CRM_BOOTSTRAP_EMAIL: ${CRM_BOOTSTRAP_EMAIL:-}
+      CRM_BOOTSTRAP_PASSWORD: ${CRM_BOOTSTRAP_PASSWORD:-}
       SPRING_DATA_MONGODB_URI: mongodb://app:${MONGO_APP_PASSWORD}@mongo:27017/app?authSource=app
     depends_on:
       mongo:
