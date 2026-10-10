@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/tesotterdevelopment/Tesotter-erick_crm_base_compose_sprint1_alapozas_projektvaz_Docker_CI_CD/compare/forger-v0.1.0...forger-v0.2.0) (2026-10-10)
+
+
+### Features
+
+* initial ForgeR v0.1.0 implementation ([63b5eed](https://github.com/tesotterdevelopment/Tesotter-erick_crm_base_compose_sprint1_alapozas_projektvaz_Docker_CI_CD/commit/63b5eed5e4089f36f7ac19873b5b0cc8ba259855))
+
 ## 0.1.0 (reworked initial release)
 
 - `forger init` and `forger new` with Spring Boot, Next.js, generic Dockerfile detection.
