@@ -30,84 +30,171 @@
 		<java.version>21</java.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 	</properties>
+	
 	<dependencies>
+
+		<!--
+			MongoDB persistence for the CRM.
+			This project uses MongoDB as its primary database.
+			Spring Data MongoDB provides MongoRepository and MongoTemplate.
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+		<!--
+			Spring Batch is currently disabled.
+			The CRM does not require batch processing in Sprint 1.
+
+			The JDBC Batch starter triggers SQL DataSource auto-configuration.
+			Since no JDBC database or driver is configured, the application
+			context fails during Maven tests.
+
+			Re-enable only when batch jobs are implemented and the required
+			persistence configuration has been designed.
+		-->
+
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch-data-mongodb</artifactId>
 		</dependency>
+		-->
+
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch-jdbc</artifactId>
 		</dependency>
+		-->
+
+		<!--
+			Spring Data REST.
+			Retained for repository-based REST functionality.
+			Review whether automatic repository exposure is needed
+			before enabling it in production.
+		-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
+
+		<!-- OAuth2 client support for authentication integration. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security-oauth2-client</artifactId>
 		</dependency>
+
+		<!--
+			Spring WebFlux is currently disabled.
+			The CRM uses Spring MVC for its synchronous REST API.
+			Reactive HTTP support can be enabled if a concrete
+			reactive requirement is introduced.
+		-->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+		-->
+
+		<!-- Main REST API framework. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
+
+		<!-- DTO/entity mapping. -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
 
+		<!-- Development-only automatic restart support. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
+		<!--
+			Spring Boot Docker Compose lifecycle integration is disabled.
+
+			Docker Compose configuration and lifecycle are managed
+			externally by ForgeR v0.1.0.
+			Keeping a single lifecycle owner avoids unexpected
+			Compose startup attempts during development.
+		-->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-docker-compose</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		-->
+
+		<!-- Lombok annotation processing. -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<!--
+			Batch test dependencies are disabled together with
+			their corresponding production starters.
+		-->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch-data-mongodb-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch-jdbc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		-->
+
+		<!-- Spring Data REST testing support. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- OAuth2 security testing support. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security-oauth2-client-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!--
+			WebFlux test dependency disabled because the reactive
+			web framework is not currently used.
+		-->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		-->
+
+		<!-- Spring MVC testing support. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
